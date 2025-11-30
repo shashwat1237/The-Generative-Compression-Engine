@@ -1,138 +1,161 @@
-# CHAMELEON — Generative Compression + File Comparator
+# 🦎 CHAMELEON — Generative Compression + File Comparator
 
 This repository contains two main Streamlit applications:
 
 - **`compressor_decompressor.py`** — CHAMELEON Generative Compression Engine  
 - **`FILE_COMPARATOR.py`** — File & Text Comparator Tool  
 
-These are the *only* files in the project and together form a complete suite:
-- AI-powered compression using GPT-2 + arithmetic coding  
+These two tools form a complete suite:
+- AI-powered text compression using GPT-2 + arithmetic coding  
 - A companion utility to compare compressed/decompressed text with originals  
 
 ---
 
-## 🦎 CHAMELEON — Generative Compression Engine (`gpt_file3.py`)
+## 🦎 CHAMELEON — Generative Compression Engine (`compressor_decompressor.py`)
 
 CHAMELEON implements modern **LLM-based text compression** using:
 
 - DistilGPT-2 language model  
-- Token probability quantization to 2²⁴ integer frequencies  
-- Custom 64-bit arithmetic coding  
+- Token probability quantization to **2²⁴ integer frequencies**  
+- Custom **64-bit arithmetic coder**  
 - Binary-safe `.bin` output  
-- Full decompression reversibility  
+- Fully lossless decompression  
 
-## 🔥 Features
-- True generative compression — NOT gzip or heuristic compression  
-- Preserves exact original text after decompression  
-- Uses GPT-2’s predicted token distributions to guide the arithmetic coder  
-- Streamlit UI for uploading text → compressing → downloading `.bin`  
-- Safe decompression with matching model  
+### 🔥 Features
+- True **generative compression** — not gzip or heuristic compression  
+- Perfect restoration of original text  
+- GPT-2 probabilities drive the arithmetic coder  
+- Streamlit UI for:
+  - Uploading or pasting text  
+  - Compressing into `.bin`  
+  - Decompressing back to original text  
+- Full integrity even for large text input  
 
 ---
 
 ## 📗 FILE COMPARATOR (`FILE_COMPARATOR.py`)
 
-A powerful Streamlit app for comparing *pasted paragraphs or file uploads*, supporting:
+A powerful Streamlit app for comparing pasted text or uploaded files.
 
-- Text files  
-- PDF files (via `pdfplumber`)  
-- Any UTF-8 or auto-detected encoding  
+### ✔️ Supports
+- `.txt`, `.md`, `.json`, `.csv`, `.py`  
+- **PDF files** (via `pdfplumber`)  
+- UTF-8 and auto-detected encodings  
+- Direct paragraph input  
+
+### ✔️ Features
 - difflib-based similarity scoring  
-- Paragraph box *takes priority* over uploaded file  
-- Live similarity verdict: identical / very similar / somewhat similar / different  
-
-Useful for verifying:
-- If CHAMELEON decompressed output matches original text  
-- If two documents differ  
-- If a PDF and a text version are the same  
+- Paragraph box has **priority** over uploaded file  
+- Live verdict:
+  - **Identical**  
+  - **Very similar**  
+  - **Somewhat similar**  
+  - **Different**  
+- Useful for:
+  - Validating CHAMELEON decompressed output  
+  - Text vs PDF comparison  
+  - Document sanity checks  
 
 ---
 
 ## 📦 Requirements
 
+Place this in `requirements.txt`:
+
+```
 streamlit
 torch
 transformers
 pdfplumber
 chardet
+```
 
-
-
-## Optional GPU acceleration:  
-Install PyTorch GPU version according to your system at  
+### Optional GPU Acceleration  
+Install PyTorch with CUDA following official instructions:  
 https://pytorch.org/get-started/locally/
 
 ---
 
 ## 🚀 Running Locally
 
-## 1. Create virtual environment
+### 1. Create a virtual environment
 ```bash
 python -m venv venv
-source venv/bin/activate     # macOS/Linux
-venv\Scripts\activate   
+```
 
-## 2. Install dependencies
+**macOS/Linux:**
+```bash
+source venv/bin/activate
+```
+
+**Windows:**
+```bash
+venv\Scripts\activate
+```
+
+---
+
+### 2. Install dependencies
+```bash
 pip install -r requirements.txt
+```
 
-3. Run one of the apps
+---
 
-##Start CHAMELEON Compressor
+### 3. Run the Apps
 
+#### **Start CHAMELEON Compressor**
+```bash
 streamlit run compressor_decompressor.py
+```
 
-
-## Start File Comparator
-
+#### **Start File Comparator**
+```bash
 streamlit run FILE_COMPARATOR.py
+```
 
-🧪## Testing
-Test compression + decompression
+---
 
-Run CHAMELEON
+## 🧪 Testing
 
-Enter/paste text → compress → download .bin
+### ✔️ Test Compression + Decompression
+1. Run CHAMELEON  
+2. Paste text → compress → download `.bin`  
+3. Upload `.bin` → decompress  
+4. Compare original vs decompressed using the comparator  
+5. Result should be **100% identical**
 
-Re-upload .bin → decompress
+### ✔️ Test Comparator
+- Paste different text on each side  
+- Upload files of different formats (PDF/TXT/JSON/etc)  
+- Compare extracted text  
 
-Paste both results into the comparator → should get 100% identical
+---
 
-Test comparator
+## ⚠️ Important Notes
 
-Paste different text on both sides
+- Compression is **slow on CPU** — GPU strongly recommended  
+- Must use the **exact same GPT-2 model** for decompression  
+- Arithmetic coder is deterministic — even tiny model changes break compatibility  
+- Comparator gracefully handles multiple encodings and PDF extraction edge cases  
 
-Upload files of different formats
+---
 
-Compare PDF vs text extracted from it
+## 🔧 Recommended Enhancements
 
-⚠️##Important Notes
+- GPU-aware batching for faster compression  
+- Support for larger LLMs (LLaMA-3 / Mistral)  
+- FastAPI backend for an online API  
+- Highlight character-level differences in comparator  
 
-CHAMELEON compression is slow on CPU — GPU recommended
+---
 
-Must use same GPT-2 model version to decompress
+## 🙌 Credits
 
-Arithmetic coder is deterministic but sensitive to model drift
+This project is inspired by modern neural compression research:
 
-Comparator will fallback gracefully when file encodings vary
+- Bellard’s **ts_zip**  
+- **LMCompress** research papers  
+- GPT-2 entropy coding experiments  
 
-🔧 <b>Recommended Enhancements</b>
-
-Add GPU-aware batching for faster compression
-
-Add support for larger LLMs (LLaMA-3 / Mistral)
-
-Add FastAPI backend for API-based compression
-
-Add file diff highlighting in comparator
-
-🙌##Credits
-
-This project implements components inspired by LM-based neural compression research such as:
-
-Bellard’s ts_zip
-
-LMCompress papers
-
-GPT-2 entropy coding experiments
-
-And extends them with a polished Streamlit UI.
+CHAMELEON integrates these concepts with a polished Streamlit interface and verification tools.
