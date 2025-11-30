@@ -56,7 +56,8 @@ class Encoder(ArithmeticCoder):
         if freq <= 0:
             raise ValueError(f"Negative frequency {freq}")
         range_width = self.high - self.low + 1
-        self.high = self.low + (range_width * (cum_freq + freq)) / / total_freq - 1
+        self.high = self.low + (range_width * (cum_freq + freq)) // total_freq - 1
+
         self.low = self.low + (range_width * cum_freq) // total_freq
 
         # Normalization loop
@@ -104,7 +105,7 @@ class Decoder(ArithmeticCoder):
     def read_bit(self):
         # Get next bit or zero if exhausted
         if self.bit_idx < len(self.bitstream):
-            bit = self.bitstream[self.bitstream[self.bit_idx]]
+            bit = self.bitstream[self.bit_idx]
             self.bit_idx += 1
             return bit
         return 0
