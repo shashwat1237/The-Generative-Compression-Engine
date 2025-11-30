@@ -198,6 +198,7 @@ def compress_streamlit_bytes(text: str, model, tokenizer, device, progress, info
     if bit_count > 0:
         current_byte <<= (8 - bit_count)
         byte_array.append(current_byte)
+
     out = struct.pack(">I", total_tokens) + bytes(byte_array)
     if len(out) < 8:
         raise RuntimeError("Compression produced invalid output.")
@@ -295,9 +296,6 @@ with col1:
         except Exception as e:
             st.error(f"Failed to read uploaded file: {e}")
 
-    # REMOVED: Load example README section
-
-
 with col2:
     st.subheader("Output / Controls")
     out_name = st.text_input(
@@ -357,6 +355,21 @@ if run_button:
                 st.stop()
             progress_bar.progress(100)
             info_line.success("Compression done.")
+
+            # ------------------------ STATS ADDED ------------------------
+            original_size = len(input_bytes)
+            compressed_size = len(out_blob)
+            percent = (1 - (compressed_size / original_size)) * 100 if original_size > 0 else 0
+
+            st.info(
+                f"📊 **Compression Statistics**\n"
+                f"- Original size: **{original_size} bytes**\n"
+                f"- Compressed size: **{compressed_size} bytes**\n"
+                f"- Compression ratio: **{compressed_size/original_size:.3f}x**\n"
+                f"- Size reduced by: **{percent:.2f}%**"
+            )
+            # ------------------------------------------------------------
+
             st.download_button(
                 "Download compressed file", data=out_blob,
                 file_name=out_name, mime="application/octet-stream"
@@ -374,6 +387,20 @@ if run_button:
             progress_bar.progress(100)
             info_line.success("Decompression finished.")
             result_placeholder.success("Decompression complete.")
+
+            # ------------------------ STATS ADDED ------------------------
+            before = len(input_bytes)
+            after = len(out_text_bytes)
+            percent = (after / before) * 100 if before > 0 else 0
+
+            st.info(
+                f"📊 **Decompression Statistics**\n"
+                f"- Compressed file size: **{before} bytes**\n"
+                f"- Reconstructed text size: **{after} bytes**\n"
+                f"- Expansion factor: **{after/before:.3f}x**"
+            )
+            # ------------------------------------------------------------
+
             st.download_button(
                 "Download decompressed text", data=out_text_bytes,
                 file_name=out_name, mime="text/plain"
@@ -382,5 +409,4 @@ if run_button:
     except Exception as e:
         st.exception(e)
 
-# REMOVED ENTIRE JUDGE CHECKLIST
 st.caption("Built for hackathon demos — CHAMELEON generative compression.")
