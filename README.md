@@ -139,7 +139,7 @@ streamlit run FILE_COMPARATOR.py
 
 ---
 
-## 🔧 Recommended Enhancements
+## 🔧 Future Enhancements
 
 - GPU-aware batching for faster compression  
 - Support for larger LLMs (LLaMA-3 / Mistral)  
