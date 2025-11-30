@@ -60,8 +60,6 @@ A powerful Streamlit app for comparing pasted text or uploaded files.
 
 ## 📦 Requirements
 
-Place this in `requirements.txt`:
-
 ```
 streamlit
 torch
